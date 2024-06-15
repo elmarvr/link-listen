@@ -1,0 +1,1 @@
+Een optimistische en sociale ontwikkelaar met een passie voor programmeren. Die veel ervaring heeft met het bouwen van schaalbare, end-to-end typesafe projecten. Altijd up-to-date met de nieuwste technologieën.

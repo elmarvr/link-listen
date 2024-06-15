@@ -1,6 +1,7 @@
 import {
-  Text as PDFText,
+  Page as PDFPage,
   View as PDFView,
+  Text as PDFText,
   Link as PDFLink,
 } from "@react-pdf/renderer";
 import * as React from "react";
@@ -35,6 +36,7 @@ function withClassName<T extends React.ComponentType<any>>(
   return TW;
 }
 
-export const Text = withClassName(PDFText, "text-base");
+export const Page = withClassName(PDFPage, "p-4");
 export const View = withClassName(PDFView);
+export const Text = withClassName(PDFText, "text-base");
 export const Link = withClassName(PDFLink, "text-base text-blue-500 underline");

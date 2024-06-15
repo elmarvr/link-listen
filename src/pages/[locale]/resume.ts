@@ -9,16 +9,29 @@ import type { DateRange } from "../../content/config";
 export const GET: APIRoute = async (context) => {
   const locale = context.currentLocale as Locale;
 
+  const summary = await getSummary(locale);
   const experience = await getExperience(locale);
   const education = await getEducation(locale);
   const courses = await getCourses();
 
   return new Response(
     await renderToBuffer(
-      Resume({ intl: context.locals.intl, education, experience, courses })
+      Resume({
+        intl: context.locals.intl,
+        summary,
+        experience,
+        education,
+        courses,
+      })
     )
   );
 };
+
+async function getSummary(locale: Locale) {
+  const entry = await getEntry("summary", locale);
+
+  return entry.body;
+}
 
 async function getExperience(locale: Locale) {
   const collection = await getCollection("experience", (entry) =>

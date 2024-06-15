@@ -6,19 +6,21 @@ export interface ProseProps {
 }
 export const Prose = ({ children }: ProseProps) => {
   return (
-    <Markdown
-      components={{
-        div: ({ children }) => <View>{children}</View>,
-        p: ({ children }) => <Text>{children}</Text>,
-        ul: ({ children }) => <View>{children}</View>,
-        li: ({ children }) => (
-          <View>
-            <Text className="">- {children}</Text>
-          </View>
-        ),
-      }}
-    >
-      {children}
-    </Markdown>
+    <View className="max-w-xl">
+      <Markdown
+        components={{
+          div: ({ children }) => <View>{children}</View>,
+          p: ({ children }) => <Text>{children}</Text>,
+          ul: ({ children }) => <View>{children}</View>,
+          li: ({ children }) => (
+            <View>
+              <Text className="">- {children}</Text>
+            </View>
+          ),
+        }}
+      >
+        {children}
+      </Markdown>
+    </View>
   );
 };

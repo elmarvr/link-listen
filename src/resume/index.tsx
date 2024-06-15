@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Document, Page } from "@react-pdf/renderer";
+import { Document } from "@react-pdf/renderer";
 
-import { Text, View, Link } from "./ui/theme";
+import { Text, View, Link, Page } from "./ui/theme";
 
 import type { FormatDateOptions, IntlShape } from "@formatjs/intl";
 import { Prose } from "./ui/prose";
@@ -11,11 +11,13 @@ import type { DateRange } from "../content/config";
 
 export const Resume = ({
   intl,
+  summary,
   experience,
   education,
   courses,
 }: {
   intl: IntlShape<string>;
+  summary: string;
   experience: Experience[];
   education: Education[];
   courses: Course[];
@@ -25,49 +27,69 @@ export const Resume = ({
   return (
     <Document>
       <IntlProvider intl={intl}>
-        <Page>
+        <Page style={{ padding: 16 }}>
           <Link src={`http://localhost:4321/${next}/resume`}>
             {next.toUpperCase()}
           </Link>
 
-          <Text>
-            Rotterdam, {intl.formatDisplayName("NL", { type: "region" })}
-          </Text>
-
-          {experience.map((entry) => (
-            <Experience key={entry.id} experience={entry} />
-          ))}
-
-          <View className="gap-3">
-            {education.map((entry) => (
-              <View key={entry.id}>
-                <Text>
-                  {entry.title} - {entry.institution}
+          <View>
+            <Text>Elmar van Riet</Text>
+            <Text>
+              Rotterdam, {intl.formatDisplayName("NL", { type: "region" })}
+            </Text>
+            <View className="flex-row justify-between">
+              <View className="flex-row gap-1.5 items-center">
+                <icons.mail />
+                <Text className="leading-none pb-0.5">
+                  elmarapply@gmail.com
                 </Text>
-                <Text>
-                  (
-                  <DateRange
-                    range={entry.range}
-                    year="numeric"
-                    suffix={false}
-                  />
-                  )
-                </Text>
-
-                <Prose>{entry.body}</Prose>
               </View>
-            ))}
+
+              <View className="flex-row gap-1.5 items-center">
+                <icons.phone />
+                <Text className="leading-none pb-0.5">+31631277843</Text>
+              </View>
+            </View>
           </View>
 
-          <View className="gap-3">
-            {courses.map((course) => (
-              <View key={course.id} className="flex-row items-center gap-2">
-                <View className="w-2 h-2 border border-neutral-900 rounded-full mt-1" />
-                <Link className="leading-none" src={course.url}>
-                  {course.title}
-                </Link>
-              </View>
-            ))}
+          <Text> </Text>
+
+          <View>
+            <Text>{intl.formatMessage({ id: "summary.title" })}</Text>
+            <Prose>{summary}</Prose>
+          </View>
+
+          <Text> </Text>
+
+          <View>
+            <Text>{intl.formatMessage({ id: "experience.title" })}</Text>
+            <View className="gap-3">
+              {experience.map((entry) => (
+                <Experience key={entry.id} experience={entry} />
+              ))}
+            </View>
+          </View>
+
+          <Text> </Text>
+
+          <View>
+            <Text>{intl.formatMessage({ id: "education.title" })}</Text>
+            <View className="gap-3">
+              {education.map((entry) => (
+                <Education key={entry.id} education={entry} />
+              ))}
+            </View>
+          </View>
+        </Page>
+
+        <Page style={{ padding: 16 }}>
+          <View>
+            <Text>{intl.formatMessage({ id: "courses.title" })}</Text>
+            <View className="gap-3">
+              {courses.map((course) => (
+                <Course key={course.id} course={course} />
+              ))}
+            </View>
           </View>
         </Page>
       </IntlProvider>
@@ -75,10 +97,7 @@ export const Resume = ({
   );
 };
 
-export interface ExperienceProps {
-  experience: Experience;
-}
-const Experience = ({ experience: exp }: ExperienceProps) => {
+const Experience = ({ experience: exp }: { experience: Experience }) => {
   return (
     <View>
       <View>
@@ -94,6 +113,31 @@ const Experience = ({ experience: exp }: ExperienceProps) => {
           <StackEntry key={entry.id} entry={entry} />
         ))}
       </View>
+    </View>
+  );
+};
+
+const Education = ({ education: ed }: { education: Education }) => {
+  return (
+    <View>
+      <Text>
+        {ed.title} - {ed.institution}
+      </Text>
+      <Text>
+        (<DateRange range={ed.range} year="numeric" suffix={false} />)
+      </Text>
+      <Prose>{ed.body}</Prose>
+    </View>
+  );
+};
+
+const Course = ({ course }: { course: Course }) => {
+  return (
+    <View className="flex-row items-center gap-2">
+      <View className="w-2 h-2 border border-neutral-900 rounded-full mt-1" />
+      <Link className="leading-none" src={course.url}>
+        {course.title}
+      </Link>
     </View>
   );
 };
