@@ -1,4 +1,5 @@
 {
   "title": "Angular",
-  "color": "#dd0031"
+  "icon": "./angular.svg",
+  "color": "#DD0031"
 }

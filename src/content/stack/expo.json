@@ -1,4 +1,5 @@
 {
   "title": "Expo",
+  "icon": "./expo.svg",
   "color": "#000020"
 }

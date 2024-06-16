@@ -1,4 +1,5 @@
 {
   "title": "TypeScript",
-  "color": "#3178C6"
+  "icon": "./typescript.svg",
+  "color": "#007ACC"
 }

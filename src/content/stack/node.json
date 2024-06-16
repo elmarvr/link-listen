@@ -1,4 +1,5 @@
 {
   "title": "Node",
-  "color": "#5FA04E"
+  "icon": "./node.svg",
+  "color": "#339933"
 }

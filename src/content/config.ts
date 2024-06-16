@@ -1,6 +1,9 @@
+import path from "node:path";
+import { readFile } from "node:fs/promises";
 import { z, defineCollection, reference } from "astro:content";
+import { parse } from "svg-parser";
 
-export const dateRange = z
+export const zdateRange = z
   .tuple([z.string(), z.string()])
   .transform(([start, end]) => {
     return [new Date(start), end === "present" ? "present" : new Date(end)] as [
@@ -9,7 +12,26 @@ export const dateRange = z
     ];
   });
 
-export type DateRange = z.infer<typeof dateRange>;
+export type DateRange = z.infer<typeof zdateRange>;
+
+const zicon = z.string().transform(async (value, ctx) => {
+  try {
+    const svg = await readFile(path.resolve("./src/icons", value), "utf-8");
+
+    return parse(svg);
+  } catch (error) {
+    ctx.addIssue({
+      code: "custom",
+      message: `Icon "${value}" not found`,
+    });
+
+    return z.NEVER;
+  }
+});
+
+const zcolor = z.custom<`#${string}`>((value) => {
+  return typeof value === "string" ? /^#[0-9a-f]{6}$/i.test(value) : false;
+});
 
 const experience = defineCollection({
   type: "content",
@@ -17,16 +39,8 @@ const experience = defineCollection({
     title: z.string(),
     company: z.string().optional(),
     icon: z.string(),
-    range: dateRange,
+    range: zdateRange,
     stack: reference("stack").array(),
-  }),
-});
-
-const stack = defineCollection({
-  type: "data",
-  schema: z.object({
-    title: z.string(),
-    color: z.string(),
   }),
 });
 
@@ -35,7 +49,7 @@ const education = defineCollection({
   schema: z.object({
     title: z.string(),
     institution: z.string(),
-    range: dateRange,
+    range: zdateRange,
   }),
 });
 
@@ -44,6 +58,15 @@ const course = defineCollection({
   schema: z.object({
     title: z.string(),
     url: z.string(),
+  }),
+});
+
+const stack = defineCollection({
+  type: "data",
+  schema: z.object({
+    title: z.string(),
+    icon: zicon,
+    color: zcolor,
   }),
 });
 

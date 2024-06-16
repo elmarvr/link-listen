@@ -6,7 +6,7 @@ import { Text, View, Link, Page } from "./ui/theme";
 import type { FormatDateOptions, IntlShape } from "@formatjs/intl";
 import { Prose } from "./ui/prose";
 import type { Experience, Education, Course } from "../pages/[locale]/resume";
-import { icons } from "./ui/icon";
+import { Icon } from "./ui/icon";
 import type { DateRange } from "../content/config";
 
 export const Resume = ({
@@ -39,14 +39,14 @@ export const Resume = ({
             </Text>
             <View className="flex-row justify-between">
               <View className="flex-row gap-1.5 items-center">
-                <icons.mail />
+                {/* <icons.mail /> */}
                 <Text className="leading-none pb-0.5">
                   elmarapply@gmail.com
                 </Text>
               </View>
 
               <View className="flex-row gap-1.5 items-center">
-                <icons.phone />
+                {/* <icons.phone /> */}
                 <Text className="leading-none pb-0.5">+31631277843</Text>
               </View>
             </View>
@@ -110,7 +110,7 @@ const Experience = ({ experience: exp }: { experience: Experience }) => {
       <Text> </Text>
       <View className="flex-row gap-3">
         {exp.stack.map((entry) => (
-          <StackEntry key={entry.id} entry={entry} />
+          <StackEntry key={entry.title} entry={entry} />
         ))}
       </View>
     </View>
@@ -161,39 +161,49 @@ const DateRange = ({ range, suffix = true, ...opts }: DateRangeProps) => {
       .join(" - ");
   }, [intl, range]);
 
-  const count = monthsBetween(range[0], range[1]);
+  const { months, years } = monthsAndYearsBetween(range[0], range[1]);
+
+  const message = React.useMemo(() => {
+    return intl.formatList(
+      [
+        years > 0 && intl.formatMessage({ id: "experience.years" }, { years }),
+        months > 0 &&
+          intl.formatMessage({ id: "experience.months" }, { months }),
+      ].filter(Boolean) as string[]
+    );
+  }, [months, years]);
 
   return (
     <Text>
       {formattedRange}
-      {suffix
-        ? ` (${intl.formatMessage({ id: "experience.months" }, { count })})`
-        : null}
+      {suffix ? ` (${message})` : null}
     </Text>
   );
 };
 
-function monthsBetween(start: Date, end: Date | "present") {
+function monthsAndYearsBetween(start: Date, end: Date | "present") {
   if (end === "present") {
     end = new Date();
   }
 
-  return (
+  const years =
     (end.getFullYear() - start.getFullYear()) * 12 +
     end.getMonth() -
-    start.getMonth()
-  );
+    start.getMonth();
+
+  return {
+    years: Math.floor(years / 12),
+    months: years % 12,
+  };
 }
 
 export interface StackEntryProps {
   entry: Experience["stack"][number];
 }
 export const StackEntry = ({ entry }: StackEntryProps) => {
-  const Icon = icons[entry.id];
-
   return (
     <View className="py-0.5 px-2 flex-row items-center gap-1.5 border border-neutral-900 rounded-md">
-      <Icon color={entry.color} size={12} />
+      <Icon icon={entry.icon} size={12} />
       <Text className="leading-none text-sm">{entry.title}</Text>
     </View>
   );

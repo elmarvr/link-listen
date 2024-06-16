@@ -21,7 +21,12 @@
     "react-dom": "^18.3.1",
     "react-markdown": "^9.0.1",
     "react-pdf-tailwind": "^2.3.0",
+    "svg-parser": "^2.0.4",
     "tailwind-merge": "^2.3.0",
     "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "@types/svg-parser": "^2.0.6"
   }
 }

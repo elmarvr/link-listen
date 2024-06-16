@@ -1,8 +1,8 @@
 import { createIntl, createIntlCache } from "@formatjs/intl";
 import { defineMiddleware } from "astro:middleware";
 
-import en from "../lang/en.json";
-import nl from "../lang/nl.json";
+import en from "../content/lang/en.json";
+import nl from "../content/lang/nl.json";
 
 const messages = {
   en,

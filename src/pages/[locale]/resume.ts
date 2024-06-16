@@ -1,10 +1,9 @@
 import { renderToBuffer } from "@react-pdf/renderer";
 import type { APIRoute } from "astro";
 import { getCollection, getEntry, type CollectionEntry } from "astro:content";
-
-import { Resume } from "../../resume";
-import type { Locale } from "../../resume/intl";
-import type { DateRange } from "../../content/config";
+import type { Locale } from "~/resume/intl";
+import type { DateRange } from "~/content/config";
+import { Resume } from "~/resume";
 
 export const GET: APIRoute = async (context) => {
   const locale = context.currentLocale as Locale;
@@ -25,6 +24,10 @@ export const GET: APIRoute = async (context) => {
       })
     )
   );
+
+  // import file  in node
+
+  // return new Response(data);
 };
 
 async function getSummary(locale: Locale) {
@@ -55,16 +58,16 @@ async function getExperience(locale: Locale) {
   return experience;
 }
 
+export type Experience = Awaited<ReturnType<typeof getExperience>>[number];
+
 async function getStackEntry(id: CollectionEntry<"stack">["id"]) {
-  const entry = await getEntry("stack", id);
+  const { data } = await getEntry("stack", id);
 
   return {
-    id: entry.id,
-    ...entry.data,
+    id,
+    ...data,
   };
 }
-
-export type Experience = Awaited<ReturnType<typeof getExperience>>[number];
 
 async function getEducation(locale: Locale) {
   const collection = await getCollection("education", (entry) =>
