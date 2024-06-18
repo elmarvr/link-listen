@@ -3,7 +3,12 @@ title: Medior full-stack developer
 company: Viatim
 icon: ""
 range: ["2023-11", "present"]
-stack: ["angular", "typescript", "node", "mongodb", "expo"]
+stack:
+  - angular
+  - typescript
+  - node
+  - mongodb
+  - expo
 ---
 
 Viatim is a network of service points for picking up and returning packages.

@@ -1,6 +1,6 @@
 ---
 title: Freelance
-range: ["2021-01", "2023-01"]
+range: [2023-09, 2023-11]
 stack: ["react", "next", "typescript"]
 icon: ""
 ---

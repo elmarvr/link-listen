@@ -1,7 +1,6 @@
 import path from "node:path";
 import { readFile } from "node:fs/promises";
 import { z, defineCollection, reference } from "astro:content";
-import { parse } from "svg-parser";
 
 export const zdateRange = z
   .tuple([z.string(), z.string()])
@@ -16,9 +15,7 @@ export type DateRange = z.infer<typeof zdateRange>;
 
 const zicon = z.string().transform(async (value, ctx) => {
   try {
-    const svg = await readFile(path.resolve("./src/icons", value), "utf-8");
-
-    return parse(svg);
+    return readFile(path.resolve("./src/icons", value), "utf-8");
   } catch (error) {
     ctx.addIssue({
       code: "custom",
@@ -40,7 +37,7 @@ const experience = defineCollection({
     company: z.string().optional(),
     icon: z.string(),
     range: zdateRange,
-    stack: reference("stack").array(),
+    stack: reference("stack").array().optional(),
   }),
 });
 
@@ -53,7 +50,7 @@ const education = defineCollection({
   }),
 });
 
-const course = defineCollection({
+const courses = defineCollection({
   type: "data",
   schema: z.object({
     title: z.string(),
@@ -70,9 +67,19 @@ const stack = defineCollection({
   }),
 });
 
+const skills = defineCollection({
+  type: "data",
+  schema: z
+    .object({
+      title: z.string(),
+    })
+    .array(),
+});
+
 export const collections = {
   experience,
   stack,
   education,
-  course,
+  courses,
+  skills,
 };

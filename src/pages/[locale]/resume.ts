@@ -4,23 +4,28 @@ import { getCollection, getEntry, type CollectionEntry } from "astro:content";
 import type { Locale } from "~/resume/intl";
 import type { DateRange } from "~/content/config";
 import { Resume } from "~/resume";
+import type { ThemeName } from "~/resume/ui/theme";
 
 export const GET: APIRoute = async (context) => {
   const locale = context.currentLocale as Locale;
+  const theme = (context.url.searchParams.get("theme") ?? "light") as ThemeName;
 
   const summary = await getSummary(locale);
   const experience = await getExperience(locale);
   const education = await getEducation(locale);
   const courses = await getCourses();
+  const skills = await getSkills(locale);
 
   return new Response(
     await renderToBuffer(
       Resume({
         intl: context.locals.intl,
+        theme,
         summary,
         experience,
         education,
         courses,
+        skills,
       })
     )
   );
@@ -44,7 +49,7 @@ async function getExperience(locale: Locale) {
   const experience = await Promise.all(
     collection.map(async (entry) => {
       const stack = await Promise.all(
-        entry.data.stack.map((entry) => getStackEntry(entry.id))
+        entry.data.stack?.map((entry) => getStackEntry(entry.id)) ?? []
       );
 
       stack.sort((a, b) => a.title.localeCompare(b.title));
@@ -88,7 +93,7 @@ async function getEducation(locale: Locale) {
 export type Education = Awaited<ReturnType<typeof getEducation>>[number];
 
 async function getCourses() {
-  const collection = await getCollection("course");
+  const collection = await getCollection("courses");
 
   collection.sort((a, b) => a.data.title.localeCompare(b.data.title));
 
@@ -99,6 +104,21 @@ async function getCourses() {
 }
 
 export type Course = Awaited<ReturnType<typeof getCourses>>[number];
+
+export async function getSkills(locale: Locale) {
+  const collection = await getEntry("skills", locale);
+
+  const skills = collection.data.map((entry) => ({
+    id: crypto.randomUUID(),
+    ...entry,
+  }));
+
+  skills.sort((a, b) => a.title.localeCompare(b.title));
+
+  return skills;
+}
+
+export type Skill = Awaited<ReturnType<typeof getSkills>>[number];
 
 function sortByRange(a: DateRange, b: DateRange) {
   if (a[1] === "present") return -1;

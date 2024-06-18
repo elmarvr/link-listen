@@ -17,16 +17,24 @@ import {
   Tspan,
   type SVGProps,
 } from "@react-pdf/renderer";
-import { type Node, type RootNode } from "svg-parser";
+import { parse, type Node } from "svg-parser";
+import { useTheme } from "./theme";
 
 export interface IconProps extends SVGProps {
-  icon: RootNode;
+  svg: string;
   size?: number | string;
+  color?: string;
 }
 
-export function Icon({ icon, ...props }: IconProps) {
-  const width = props.size ?? props?.width;
-  const height = props.size ?? props?.height;
+export function Icon({ svg, color, ...props }: IconProps) {
+  const { theme } = useTheme();
+
+  const icon = parse(
+    svg.replace(/currentColor/g, color ?? theme.colors.foreground)
+  );
+
+  const width = props.size ?? props?.width ?? 12;
+  const height = props.size ?? props?.height ?? 12;
 
   return (
     <InnerIcon
